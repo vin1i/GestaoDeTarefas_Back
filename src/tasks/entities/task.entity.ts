@@ -21,17 +21,17 @@ export class Task {
     @ManyToOne(() => User, user => user.tasks, {onDelete: 'CASCADE'})
     user: User; // Importar o User da entidade do User no diretório Entities do User.
     
-    @Column({type: 'varchar', length: 255,  nullable: false})
+    @Column({type: 'varchar', length: 255, default: 'Untitled', nullable: false})
     title: string;
 
-    @Column({type:'varchar', nullable: false})
+    @Column({type:'varchar', default:'Untitled', nullable: false})
     description: string;
 
 
     @Column({
         type: 'enum',
         enum: TaskStatus,
-        default: TaskStatus.Pending,
+        default: TaskStatus.InProgress,
         nullable: false})
     status: TaskStatus;
 
@@ -45,18 +45,10 @@ export class Task {
     priority: TaskPriority; 
 
 
-    @Column({ type: 'datetime', nullable: false})
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP', nullable: false})
     due_date: Date;
     
-  @CreateDateColumn({ type: 'timestamp', nullable: false })
-    created_at: Date;
-
-    @UpdateDateColumn({ type: 'timestamp', nullable: false })
-    updated_at: Date;
-
-
-
-
+ 
 
 
     
