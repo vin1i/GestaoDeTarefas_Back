@@ -7,4 +7,5 @@ export class CreateTaskDto {
     status?: TaskStatus; // ? = Opcional
     due_date?: Date; // ? = Opcional
     userId: number;
+    categoryId: number;
 }

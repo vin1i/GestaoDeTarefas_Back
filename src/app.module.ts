@@ -6,9 +6,14 @@ import { TasksModule } from './tasks/tasks.module';
 import {TypeOrmModule} from '@nestjs/typeorm'; 
 import { Task } from './tasks/entities/task.entity';
 import { User } from './users/entities/user.entity';
+import { CategoriesModule } from './categories/categories.module';
+import { CommentsModule } from './comments/comments.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { SharedTasksModule } from './shared_tasks/shared_tasks.module';
+import { Category } from './categories/entities/category.entity';
 
 @Module({
-  imports: [UserModule, TasksModule,
+  imports: [UserModule, TasksModule, CategoriesModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host:'localhost',
@@ -16,10 +21,14 @@ import { User } from './users/entities/user.entity';
       username:'root',
       password: 'root',
       database:'gestaodetarefas',
-      entities: [Task, User],
+      entities: [Task, User, Category],
       synchronize: true, //"synchronize: true" - Não deve ser usada em produção, caso contrário, você irá perder dados de produção.
 
-  })
+  }),
+    CategoriesModule,
+    CommentsModule,
+    NotificationsModule,
+    SharedTasksModule
   ],
   controllers: [AppController],
   providers: [AppService],

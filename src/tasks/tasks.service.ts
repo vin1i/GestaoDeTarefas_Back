@@ -4,17 +4,25 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task, TaskStatus } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Category } from 'src/categories/entities/category.entity';
 
 @Injectable()
 export class TasksService {
   constructor ( 
     
     @InjectRepository(Task)
+    private taskRepository: Repository<Task>,
+  
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>, // 'categoryRepository' é referente à entidade Category.
+  ) {}
 
-    private taskRepository: Repository<Task>) {}
+  
+  
 
+  
 
-  async create(createTaskDto: CreateTaskDto) {
+    async create(createTaskDto: CreateTaskDto) {
     const taskCreate = this.taskRepository.create(createTaskDto)
     taskCreate.status = TaskStatus.Pending; //Puxando do task.entity - enum do status, OBS: Isso SEMPRE vai colocar um padrão em Status na hora de criar a task, sempre vai colocar "pending" no status!
     
@@ -23,20 +31,24 @@ export class TasksService {
     
   }   
 
-  findAll() {
+  async findAll() {
     const taskFindAll = this.taskRepository.find()
-    return taskFindAll;
+    return await taskFindAll;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: number) {
+    
+    const taskFindOne = this.taskRepository.findOne({ where: {id}})
+    return await taskFindOne;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: number, updateTaskDto: UpdateTaskDto) {
+    await this.taskRepository.update(id,updateTaskDto)
+    return await this.taskRepository.findOne({where: {id}});
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: number) {
+    await this.taskRepository.delete(id)
+    return await this.taskRepository.findOne({where: {id}});
   }
 }

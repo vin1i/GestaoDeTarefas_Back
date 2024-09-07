@@ -34,26 +34,6 @@ export class UsersController{
     return this.usersService.remove(+id);
   }
 
-// @Get()
-// findAll() {
-//     return this.usersService.findAll();
-// }
-
-// @Post()
-// create(@Body() user: CreateUserDto){
-//     return this.usersService.create(user) 
-// }
-
-
-// @Patch(':id')
-// update(@Param('id') id: number, @Body() UpdateUserDto: UpdateUserDto) {
-//   return this.usersService.update(+id, UpdateUserDto);
-// }
-
-// @Delete(':id')
-// remove(@Param('id') id: number) {
-//   return this.usersService.remove(+id);
-// }
 
 
 }
