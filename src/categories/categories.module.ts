@@ -4,10 +4,10 @@ import { CategoriesController } from './categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Category])],
   controllers: [CategoriesController],
   providers: [CategoriesService],
+  exports: [TypeOrmModule],  // Exporte o TypeOrmModule para que outros módulos possam usar o CategoryRepository
 })
 export class CategoriesModule {}

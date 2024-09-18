@@ -1,54 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task, TaskStatus } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from 'src/categories/entities/category.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class TasksService {
-  constructor ( 
-    
+  constructor(
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
-  
+    
     @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>, // 'categoryRepository' é referente à entidade Category.
+    private readonly categoryRepository: Repository<Category>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  
-  
+  async create(createTaskDto: CreateTaskDto) {
+    const { userId, categoryId, ...taskData } = createTaskDto;
 
-  
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
 
-    async create(createTaskDto: CreateTaskDto) {
-    const taskCreate = this.taskRepository.create(createTaskDto)
-    taskCreate.status = TaskStatus.Pending; //Puxando do task.entity - enum do status, OBS: Isso SEMPRE vai colocar um padrão em Status na hora de criar a task, sempre vai colocar "pending" no status!
-    
+    const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${categoryId} not found`);
+    }
+
+    const taskCreate = this.taskRepository.create({
+      ...taskData,
+      user,
+      category,
+      status: TaskStatus.Pending,
+    });
+
     return await this.taskRepository.save(taskCreate);
-    
-    
-  }   
+  }
 
   async findAll() {
-    const taskFindAll = this.taskRepository.find()
-    return await taskFindAll;
+    return await this.taskRepository.find();
   }
 
   async findOne(id: number) {
-    
-    const taskFindOne = this.taskRepository.findOne({ where: {id}})
-    return await taskFindOne;
+    const task = await this.taskRepository.findOne({ where: { id } });
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return task;
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
-    await this.taskRepository.update(id,updateTaskDto)
-    return await this.taskRepository.findOne({where: {id}});
+    const task = await this.findOne(id);
+    await this.taskRepository.update(id, updateTaskDto);
+    return this.taskRepository.findOne({ where: { id } });
   }
 
   async remove(id: number) {
-    await this.taskRepository.delete(id)
-    return await this.taskRepository.findOne({where: {id}});
+    const task = await this.findOne(id);
+    await this.taskRepository.remove(task);
+    return { message: `Task with ID ${id} removed` };
   }
 }

@@ -1,5 +1,5 @@
 import { Task } from "src/tasks/entities/task.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'users' })
 export class User {
@@ -16,20 +16,5 @@ export class User {
     password: string;
     
     @OneToMany(() => Task, task => task.user)
-    tasks: Task[];
-
-
-
-        // Abaixo está o trecho da criação das tabelas created_at e update_at, está comentado, porque elas foram criadas no MySQL manualmente, pois no NestJs, os valores 'Default' estavam inválidos.
-
-
-
-    // @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    // created_at: Date;
-
-    // @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    // updated_at: Date;
-
-
-
+    tasks: Task[]; // Um usuário pode ter várias tarefas
 }
