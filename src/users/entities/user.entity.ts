@@ -1,3 +1,4 @@
+import { Project } from "src/project/entities/project.entity";
 import { Task } from "src/tasks/entities/task.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -17,4 +18,8 @@ export class User {
     
     @OneToMany(() => Task, task => task.user)
     tasks: Task[]; // Um usuário pode ter várias tarefas
+
+
+    @OneToMany(() => Project, (project) => project.owner)
+    projects: Project[]; 
 }
