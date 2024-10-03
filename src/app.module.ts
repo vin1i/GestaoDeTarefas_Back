@@ -11,9 +11,11 @@ import { CommentsModule } from './comments/comments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SharedTasksModule } from './shared_tasks/shared_tasks.module';
 import { Category } from './categories/entities/category.entity';
+import { Project } from './project/entities/project.entity';
+import { ProjectModule } from './project/project.module';
 
 @Module({
-  imports: [UserModule, TasksModule, CategoriesModule,
+  imports: [UserModule, TasksModule, CategoriesModule, ProjectModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host:'localhost',
@@ -21,7 +23,7 @@ import { Category } from './categories/entities/category.entity';
       username:'root',
       password: 'root',
       database:'gestaodetarefas',
-      entities: [Task, User, Category],
+      entities: [Task, User, Category, Project],
       synchronize: true, //"synchronize: true" - Não deve ser usada em produção, caso contrário, você irá perder dados de produção.
 
   }),
